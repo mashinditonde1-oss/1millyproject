@@ -11,11 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ShareTokenRouteImport } from './routes/share.$token'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
 import { Route as AppOnboardingRouteImport } from './routes/app.onboarding'
 import { Route as AppClientsRouteImport } from './routes/app.clients'
 import { Route as AppDocsIndexRouteImport } from './routes/app.docs.index'
+import { Route as AppDocsNewRouteImport } from './routes/app.docs.new'
+import { Route as AppDocsIdRouteImport } from './routes/app.docs.$id'
 
 const AppRoute = AppRouteImport.update({
   id: '/app',
@@ -25,6 +28,11 @@ const AppRoute = AppRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShareTokenRoute = ShareTokenRouteImport.update({
+  id: '/share/$token',
+  path: '/share/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthCallbackRoute = AuthCallbackRouteImport.update({
@@ -52,6 +60,16 @@ const AppDocsIndexRoute = AppDocsIndexRouteImport.update({
   path: '/docs/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppDocsNewRoute = AppDocsNewRouteImport.update({
+  id: '/docs/new',
+  path: '/docs/new',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDocsIdRoute = AppDocsIdRouteImport.update({
+  id: '/docs/$id',
+  path: '/docs/$id',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -60,6 +78,9 @@ export interface FileRoutesByFullPath {
   '/app/onboarding': typeof AppOnboardingRoute
   '/app/settings': typeof AppSettingsRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/share/$token': typeof ShareTokenRoute
+  '/app/docs/$id': typeof AppDocsIdRoute
+  '/app/docs/new': typeof AppDocsNewRoute
   '/app/docs/': typeof AppDocsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -69,6 +90,9 @@ export interface FileRoutesByTo {
   '/app/onboarding': typeof AppOnboardingRoute
   '/app/settings': typeof AppSettingsRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/share/$token': typeof ShareTokenRoute
+  '/app/docs/$id': typeof AppDocsIdRoute
+  '/app/docs/new': typeof AppDocsNewRoute
   '/app/docs': typeof AppDocsIndexRoute
 }
 export interface FileRoutesById {
@@ -79,6 +103,9 @@ export interface FileRoutesById {
   '/app/onboarding': typeof AppOnboardingRoute
   '/app/settings': typeof AppSettingsRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/share/$token': typeof ShareTokenRoute
+  '/app/docs/$id': typeof AppDocsIdRoute
+  '/app/docs/new': typeof AppDocsNewRoute
   '/app/docs/': typeof AppDocsIndexRoute
 }
 export interface FileRouteTypes {
@@ -90,6 +117,9 @@ export interface FileRouteTypes {
     | '/app/onboarding'
     | '/app/settings'
     | '/auth/callback'
+    | '/share/$token'
+    | '/app/docs/$id'
+    | '/app/docs/new'
     | '/app/docs/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -99,6 +129,9 @@ export interface FileRouteTypes {
     | '/app/onboarding'
     | '/app/settings'
     | '/auth/callback'
+    | '/share/$token'
+    | '/app/docs/$id'
+    | '/app/docs/new'
     | '/app/docs'
   id:
     | '__root__'
@@ -108,6 +141,9 @@ export interface FileRouteTypes {
     | '/app/onboarding'
     | '/app/settings'
     | '/auth/callback'
+    | '/share/$token'
+    | '/app/docs/$id'
+    | '/app/docs/new'
     | '/app/docs/'
   fileRoutesById: FileRoutesById
 }
@@ -115,6 +151,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
   AuthCallbackRoute: typeof AuthCallbackRoute
+  ShareTokenRoute: typeof ShareTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -131,6 +168,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/share/$token': {
+      id: '/share/$token'
+      path: '/share/$token'
+      fullPath: '/share/$token'
+      preLoaderRoute: typeof ShareTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth/callback': {
@@ -168,6 +212,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDocsIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/docs/new': {
+      id: '/app/docs/new'
+      path: '/docs/new'
+      fullPath: '/app/docs/new'
+      preLoaderRoute: typeof AppDocsNewRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/docs/$id': {
+      id: '/app/docs/$id'
+      path: '/docs/$id'
+      fullPath: '/app/docs/$id'
+      preLoaderRoute: typeof AppDocsIdRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
@@ -175,6 +233,8 @@ interface AppRouteChildren {
   AppClientsRoute: typeof AppClientsRoute
   AppOnboardingRoute: typeof AppOnboardingRoute
   AppSettingsRoute: typeof AppSettingsRoute
+  AppDocsIdRoute: typeof AppDocsIdRoute
+  AppDocsNewRoute: typeof AppDocsNewRoute
   AppDocsIndexRoute: typeof AppDocsIndexRoute
 }
 
@@ -182,6 +242,8 @@ const AppRouteChildren: AppRouteChildren = {
   AppClientsRoute: AppClientsRoute,
   AppOnboardingRoute: AppOnboardingRoute,
   AppSettingsRoute: AppSettingsRoute,
+  AppDocsIdRoute: AppDocsIdRoute,
+  AppDocsNewRoute: AppDocsNewRoute,
   AppDocsIndexRoute: AppDocsIndexRoute,
 }
 
@@ -191,6 +253,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
   AuthCallbackRoute: AuthCallbackRoute,
+  ShareTokenRoute: ShareTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
