@@ -115,8 +115,8 @@ function Landing() {
       </section>
 
       <footer className="px-4 py-8 text-center text-xs text-muted-foreground space-x-4">
-        <Link to="/terms" className="hover:text-foreground">Terms of Service</Link>
-        <Link to="/privacy" className="hover:text-foreground">Privacy Policy</Link>
+        <Link to="/" onClick={(e) => e.preventDefault()} className="hover:text-foreground">Terms of Service</Link>
+        <Link to="/" onClick={(e) => e.preventDefault()} className="hover:text-foreground">Privacy Policy</Link>
         <p className="mt-3">© {new Date().getFullYear()} GetPaid Zimbabwe.</p>
       </footer>
     </div>
