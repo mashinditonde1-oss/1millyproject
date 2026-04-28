@@ -200,11 +200,11 @@ function Landing() {
 
 function Bullet({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {
   return (
-    <li className="flex items-center gap-3 text-sm">
+    <li className="flex items-center justify-center gap-3 text-sm">
       <span className="h-7 w-7 rounded-md bg-secondary text-foreground flex items-center justify-center shrink-0 border border-border">
         {icon}
       </span>
-      <span className="text-foreground/90">{children}</span>
+      <span className="text-foreground/90 text-left">{children}</span>
     </li>
   );
 }
