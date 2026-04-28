@@ -61,18 +61,15 @@ function Landing() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Logo className="h-7 w-7" />
-            <span className="font-semibold tracking-tight">GetPaid</span>
-          </div>
-          <span className="text-xs text-muted-foreground hidden sm:inline">Built in Zimbabwe 🇿🇼</span>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-center gap-2">
+          <Logo className="h-7 w-7" />
+          <span className="font-semibold tracking-tight">GetPaid</span>
         </div>
       </header>
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-16 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
         {/* Hero */}
-        <section className="space-y-6">
+        <section className="space-y-6 text-center lg:text-center">
           <div className="inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
             <span className="h-1.5 w-1.5 rounded-full bg-[var(--gold)]" />
             Free to start · No credit card
@@ -81,11 +78,11 @@ function Landing() {
             Get paid faster.<br />
             <span className="text-muted-foreground">Look more professional.</span>
           </h1>
-          <p className="text-base text-muted-foreground max-w-md leading-relaxed">
+          <p className="text-base text-muted-foreground max-w-md leading-relaxed mx-auto">
             Send quotes on WhatsApp. Convert to invoices in one tap. Track every cent owed to your business.
           </p>
 
-          <ul className="grid gap-3 pt-2">
+          <ul className="grid gap-3 pt-2 max-w-xs mx-auto text-left">
             <Bullet icon={<Zap className="h-4 w-4" />}>Quote → Invoice in one tap</Bullet>
             <Bullet icon={<BarChart3 className="h-4 w-4" />}>Real-time outstanding balance</Bullet>
             <Bullet icon={<ShieldCheck className="h-4 w-4" />}>ZIMRA-ready · ZiG &amp; USD</Bullet>
@@ -177,9 +174,9 @@ function Landing() {
       </main>
 
       <footer className="border-t border-border mt-10">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 text-xs text-muted-foreground flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 text-xs text-muted-foreground flex flex-col items-center gap-1 text-center">
           <span>© {new Date().getFullYear()} GetPaid Zimbabwe</span>
-          <span className="hidden sm:inline">Made for hustlers.</span>
+          <span>Made for hustlers.</span>
         </div>
       </footer>
     </div>
