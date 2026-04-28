@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/Logo";
 import { Loader2, ArrowRight, ShieldCheck, Zap, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
+import zimraLogo from "@/assets/zimra-logo.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -75,17 +76,31 @@ function Landing() {
             Free to start · No credit card
           </div>
           <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight leading-[1.05] text-foreground">
-            Get paid faster.<br />
-            <span className="text-muted-foreground">Look more professional.</span>
+            Stop chasing money.<br />
+            <span className="text-muted-foreground">Start collecting it.</span>
           </h1>
-          <p className="text-base text-muted-foreground max-w-md leading-relaxed mx-auto">
-            Send quotes on WhatsApp. Convert to invoices in one tap. Track every cent owed to your business.
+          <p className="text-base text-foreground/80 max-w-md leading-relaxed mx-auto">
+            GetPaid turns your phone into a billing machine. Send a quote on WhatsApp, get it signed in minutes, and watch invoices get paid — not forgotten.
           </p>
 
-          <ul className="grid gap-3 pt-2 max-w-xs mx-auto text-left">
-            <Bullet icon={<Zap className="h-4 w-4" />}>Quote → Invoice in one tap</Bullet>
-            <Bullet icon={<BarChart3 className="h-4 w-4" />}>Real-time outstanding balance</Bullet>
-            <Bullet icon={<ShieldCheck className="h-4 w-4" />}>ZIMRA-ready · ZiG &amp; USD</Bullet>
+          <ul className="grid gap-3 pt-2 max-w-sm mx-auto">
+            <Bullet icon={<Zap className="h-4 w-4" />}>
+              Quote today, invoice today — one tap, zero re-typing
+            </Bullet>
+            <Bullet icon={<BarChart3 className="h-4 w-4" />}>
+              See exactly who owes you what, in real time
+            </Bullet>
+            <Bullet
+              icon={
+                <img
+                  src={zimraLogo}
+                  alt="ZIMRA"
+                  className="h-4 w-4 object-contain"
+                />
+              }
+            >
+              ZIMRA-ready VAT &amp; receipts in ZiG and USD
+            </Bullet>
           </ul>
         </section>
 
