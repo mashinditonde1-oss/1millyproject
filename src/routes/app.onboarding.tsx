@@ -20,7 +20,7 @@ export const Route = createFileRoute("/app/onboarding")({
 
 function Onboarding() {
   const { user, loading } = useAuth();
-  const [profile, setProfile] = useProfile(user?.id ?? null);
+  const [profile, setProfile, profileLoading] = useProfile(user?.id ?? null);
   const nav = useNavigate();
 
   const [businessName, setBusinessName] = useState("");
@@ -34,10 +34,10 @@ function Onboarding() {
 
   useEffect(() => {
     if (!loading && !user) nav({ to: "/" });
-    if (profile) nav({ to: "/app" });
-  }, [user, loading, profile, nav]);
+    if (!loading && !profileLoading && profile) nav({ to: "/app" });
+  }, [user, loading, profile, profileLoading, nav]);
 
-  if (loading || !user) {
+  if (loading || profileLoading || !user) {
     return <div className="min-h-screen grid place-items-center"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>;
   }
 

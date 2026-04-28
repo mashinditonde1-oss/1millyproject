@@ -16,17 +16,17 @@ export const Route = createFileRoute("/app")({
 
 function AppRoute() {
   const { user, loading } = useAuth();
-  const [profile] = useProfile(user?.id ?? null);
+  const [profile, , profileLoading] = useProfile(user?.id ?? null);
   const { docs } = useDocs(user?.id ?? null);
   const { clients } = useClients(user?.id ?? null);
   const nav = useNavigate();
 
   useEffect(() => {
     if (!loading && !user) nav({ to: "/" });
-    if (user && !loading && !profile) nav({ to: "/app/onboarding" });
-  }, [user, loading, profile, nav]);
+    if (!loading && !profileLoading && user && !profile) nav({ to: "/app/onboarding" });
+  }, [user, loading, profile, profileLoading, nav]);
 
-  if (loading || !user || !profile) {
+  if (loading || profileLoading || !user || !profile) {
     return <div className="min-h-screen grid place-items-center"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>;
   }
 
