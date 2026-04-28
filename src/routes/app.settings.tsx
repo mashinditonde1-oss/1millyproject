@@ -18,13 +18,13 @@ export const Route = createFileRoute("/app/settings")({
 
 function SettingsPage() {
   const { user, loading, signOut } = useAuth();
-  const [profile, setProfile] = useProfile(user?.id ?? null);
+  const [profile, setProfile, profileLoading] = useProfile(user?.id ?? null);
   const nav = useNavigate();
 
   useEffect(() => {
     if (!loading && !user) nav({ to: "/" });
-    if (user && !profile) nav({ to: "/app/onboarding" });
-  }, [user, loading, profile, nav]);
+    if (!loading && !profileLoading && user && !profile) nav({ to: "/app/onboarding" });
+  }, [user, loading, profile, profileLoading, nav]);
 
   const [businessName, setBusinessName] = useState(profile?.businessName ?? "");
   const [phone, setPhone] = useState(profile?.phone ?? "");
@@ -52,7 +52,7 @@ function SettingsPage() {
     }
   }, [profile]);
 
-  if (loading || !user || !profile) {
+  if (loading || profileLoading || !user || !profile) {
     return <div className="min-h-screen grid place-items-center"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>;
   }
 
