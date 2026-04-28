@@ -11,6 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ShareTokenRouteImport } from './routes/share.$token'
+import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
+import { Route as AppSettingsRouteImport } from './routes/app.settings'
+import { Route as AppOnboardingRouteImport } from './routes/app.onboarding'
+import { Route as AppClientsRouteImport } from './routes/app.clients'
+import { Route as AppDocsIndexRouteImport } from './routes/app.docs.index'
+import { Route as AppDocsNewRouteImport } from './routes/app.docs.new'
+import { Route as AppDocsIdRouteImport } from './routes/app.docs.$id'
 
 const AppRoute = AppRouteImport.update({
   id: '/app',
@@ -22,31 +30,128 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShareTokenRoute = ShareTokenRouteImport.update({
+  id: '/share/$token',
+  path: '/share/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/auth/callback',
+  path: '/auth/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppSettingsRoute = AppSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppOnboardingRoute = AppOnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppClientsRoute = AppClientsRouteImport.update({
+  id: '/clients',
+  path: '/clients',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDocsIndexRoute = AppDocsIndexRouteImport.update({
+  id: '/docs/',
+  path: '/docs/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDocsNewRoute = AppDocsNewRouteImport.update({
+  id: '/docs/new',
+  path: '/docs/new',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDocsIdRoute = AppDocsIdRouteImport.update({
+  id: '/docs/$id',
+  path: '/docs/$id',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/app': typeof AppRoute
+  '/app': typeof AppRouteWithChildren
+  '/app/clients': typeof AppClientsRoute
+  '/app/onboarding': typeof AppOnboardingRoute
+  '/app/settings': typeof AppSettingsRoute
+  '/auth/callback': typeof AuthCallbackRoute
+  '/share/$token': typeof ShareTokenRoute
+  '/app/docs/$id': typeof AppDocsIdRoute
+  '/app/docs/new': typeof AppDocsNewRoute
+  '/app/docs/': typeof AppDocsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/app': typeof AppRoute
+  '/app': typeof AppRouteWithChildren
+  '/app/clients': typeof AppClientsRoute
+  '/app/onboarding': typeof AppOnboardingRoute
+  '/app/settings': typeof AppSettingsRoute
+  '/auth/callback': typeof AuthCallbackRoute
+  '/share/$token': typeof ShareTokenRoute
+  '/app/docs/$id': typeof AppDocsIdRoute
+  '/app/docs/new': typeof AppDocsNewRoute
+  '/app/docs': typeof AppDocsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/app': typeof AppRoute
+  '/app': typeof AppRouteWithChildren
+  '/app/clients': typeof AppClientsRoute
+  '/app/onboarding': typeof AppOnboardingRoute
+  '/app/settings': typeof AppSettingsRoute
+  '/auth/callback': typeof AuthCallbackRoute
+  '/share/$token': typeof ShareTokenRoute
+  '/app/docs/$id': typeof AppDocsIdRoute
+  '/app/docs/new': typeof AppDocsNewRoute
+  '/app/docs/': typeof AppDocsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/app'
+  fullPaths:
+    | '/'
+    | '/app'
+    | '/app/clients'
+    | '/app/onboarding'
+    | '/app/settings'
+    | '/auth/callback'
+    | '/share/$token'
+    | '/app/docs/$id'
+    | '/app/docs/new'
+    | '/app/docs/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/app'
-  id: '__root__' | '/' | '/app'
+  to:
+    | '/'
+    | '/app'
+    | '/app/clients'
+    | '/app/onboarding'
+    | '/app/settings'
+    | '/auth/callback'
+    | '/share/$token'
+    | '/app/docs/$id'
+    | '/app/docs/new'
+    | '/app/docs'
+  id:
+    | '__root__'
+    | '/'
+    | '/app'
+    | '/app/clients'
+    | '/app/onboarding'
+    | '/app/settings'
+    | '/auth/callback'
+    | '/share/$token'
+    | '/app/docs/$id'
+    | '/app/docs/new'
+    | '/app/docs/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AppRoute: typeof AppRoute
+  AppRoute: typeof AppRouteWithChildren
+  AuthCallbackRoute: typeof AuthCallbackRoute
+  ShareTokenRoute: typeof ShareTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,13 +170,100 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/share/$token': {
+      id: '/share/$token'
+      path: '/share/$token'
+      fullPath: '/share/$token'
+      preLoaderRoute: typeof ShareTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/auth/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/settings': {
+      id: '/app/settings'
+      path: '/settings'
+      fullPath: '/app/settings'
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/onboarding': {
+      id: '/app/onboarding'
+      path: '/onboarding'
+      fullPath: '/app/onboarding'
+      preLoaderRoute: typeof AppOnboardingRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/clients': {
+      id: '/app/clients'
+      path: '/clients'
+      fullPath: '/app/clients'
+      preLoaderRoute: typeof AppClientsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/docs/': {
+      id: '/app/docs/'
+      path: '/docs'
+      fullPath: '/app/docs/'
+      preLoaderRoute: typeof AppDocsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/docs/new': {
+      id: '/app/docs/new'
+      path: '/docs/new'
+      fullPath: '/app/docs/new'
+      preLoaderRoute: typeof AppDocsNewRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/docs/$id': {
+      id: '/app/docs/$id'
+      path: '/docs/$id'
+      fullPath: '/app/docs/$id'
+      preLoaderRoute: typeof AppDocsIdRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
+interface AppRouteChildren {
+  AppClientsRoute: typeof AppClientsRoute
+  AppOnboardingRoute: typeof AppOnboardingRoute
+  AppSettingsRoute: typeof AppSettingsRoute
+  AppDocsIdRoute: typeof AppDocsIdRoute
+  AppDocsNewRoute: typeof AppDocsNewRoute
+  AppDocsIndexRoute: typeof AppDocsIndexRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppClientsRoute: AppClientsRoute,
+  AppOnboardingRoute: AppOnboardingRoute,
+  AppSettingsRoute: AppSettingsRoute,
+  AppDocsIdRoute: AppDocsIdRoute,
+  AppDocsNewRoute: AppDocsNewRoute,
+  AppDocsIndexRoute: AppDocsIndexRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AppRoute: AppRoute,
+  AppRoute: AppRouteWithChildren,
+  AuthCallbackRoute: AuthCallbackRoute,
+  ShareTokenRoute: ShareTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
