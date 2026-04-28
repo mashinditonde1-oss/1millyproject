@@ -1,158 +1,209 @@
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/Logo";
-import {
-  ShieldCheck, MapPin, WifiOff, CreditCard, MessageSquare, Zap,
-  BarChart3, DollarSign, FileCheck2, ArrowRight, Loader2
-} from "lucide-react";
+import { Loader2, ArrowRight, ShieldCheck, Zap, BarChart3 } from "lucide-react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "GetPaid — Get paid faster. Built for Zimbabwe." },
-      { name: "description", content: "Create quotes your clients can sign on WhatsApp. Turn them into invoices in one tap. Track every cent. Free to start." },
-      { property: "og:title", content: "GetPaid — Get paid faster. Built for Zimbabwe." },
-      { property: "og:description", content: "Quotes, invoices, payment tracking, BI and marketing — built for Zimbabwean small businesses." },
+      { name: "description", content: "Quotes, invoices and payment tracking for Zimbabwean small businesses. Free to start." },
     ],
   }),
   component: Landing,
 });
 
 function Landing() {
-  const { user, signInWithGoogle, loading } = useAuth();
+  const { user, signInWithEmail, signUpWithEmail, signInWithGoogle, loading } = useAuth();
   const nav = useNavigate();
-  const [signingIn, setSigningIn] = useState(false);
-  const [authError, setAuthError] = useState<string | null>(null);
+
+  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     if (user) nav({ to: "/app" });
   }, [user, nav]);
 
-  const onSignIn = async () => {
-    setAuthError(null);
-    setSigningIn(true);
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || password.length < 6) {
+      toast.error("Enter a valid email and a password (6+ chars).");
+      return;
+    }
+    setBusy(true);
+    const fn = mode === "signin" ? signInWithEmail : signUpWithEmail;
+    const { error } = await fn(email, password);
+    setBusy(false);
+    if (error) {
+      toast.error(error);
+    } else if (mode === "signup") {
+      toast.success("Check your email to confirm your account.");
+    }
+  };
+
+  const onGoogle = async () => {
+    setBusy(true);
     const { error } = await signInWithGoogle();
     if (error) {
-      setAuthError(error);
-      setSigningIn(false);
+      setBusy(false);
+      toast.error(error);
     }
   };
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="px-4 py-4 flex items-center justify-between max-w-screen-md mx-auto">
-        <div className="flex items-center gap-2">
-          <Logo />
-          <span className="font-bold text-lg">GetPaid</span>
+      {/* Header */}
+      <header className="border-b border-border">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Logo className="h-7 w-7" />
+            <span className="font-semibold tracking-tight">GetPaid</span>
+          </div>
+          <span className="text-xs text-muted-foreground hidden sm:inline">Built in Zimbabwe 🇿🇼</span>
         </div>
       </header>
 
-      <section className="px-4 pt-8 pb-12 max-w-screen-md mx-auto">
-        <div className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-xs font-medium text-primary mb-5">
-          <span className="h-1.5 w-1.5 rounded-full bg-[var(--gold)]" />
-          Built in Zimbabwe
-        </div>
-        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight leading-[1.1]">
-          Get paid faster.<br />
-          Look more professional.<br />
-          <span className="text-primary">Built for Zimbabwe.</span>
-        </h1>
-        <p className="mt-5 text-base text-muted-foreground leading-relaxed">
-          Create quotes your clients can sign on WhatsApp. Turn them into invoices in one tap. Track every cent owed to your business. <span className="font-semibold text-foreground">Free to start.</span>
-        </p>
-
-        {authError && (
-          <div role="alert" className="mt-6 rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-sm">
-            <p className="font-semibold text-destructive">Sign in failed</p>
-            <p className="text-destructive/90 mt-1">{authError}</p>
-            <Button onClick={onSignIn} variant="outline" size="sm" className="mt-3">Retry</Button>
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-16 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+        {/* Hero */}
+        <section className="space-y-6">
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
+            <span className="h-1.5 w-1.5 rounded-full bg-[var(--gold)]" />
+            Free to start · No credit card
           </div>
-        )}
-
-        <div className="mt-7">
-          <Button
-            onClick={onSignIn}
-            disabled={signingIn || loading}
-            size="lg"
-            className="w-full h-14 text-base font-semibold shadow-md"
-          >
-            {signingIn ? (
-              <><Loader2 className="h-5 w-5 animate-spin" /> Connecting…</>
-            ) : (
-              <>
-                <GoogleIcon />
-                Continue with Google — it's free
-              </>
-            )}
-          </Button>
-          <p className="text-xs text-muted-foreground mt-3 text-center px-2">
-            We only use your Google account to sign you in. We never see your password or share your data.
+          <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight leading-[1.05] text-foreground">
+            Get paid faster.<br />
+            <span className="text-muted-foreground">Look more professional.</span>
+          </h1>
+          <p className="text-base text-muted-foreground max-w-md leading-relaxed">
+            Send quotes on WhatsApp. Convert to invoices in one tap. Track every cent owed to your business.
           </p>
-        </div>
 
-        <ul className="mt-8 grid gap-2.5">
-          <Trust icon={<ShieldCheck className="h-4 w-4" />}>Your data is yours. Always.</Trust>
-          <Trust icon={<MapPin className="h-4 w-4" />}>Built in Zimbabwe for Zimbabwean businesses</Trust>
-          <Trust icon={<WifiOff className="h-4 w-4" />}>Works offline — load shedding can't stop you</Trust>
-          <Trust icon={<CreditCard className="h-4 w-4" />}>No credit card. No contract. Start free today.</Trust>
-        </ul>
-      </section>
+          <ul className="grid gap-3 pt-2">
+            <Bullet icon={<Zap className="h-4 w-4" />}>Quote → Invoice in one tap</Bullet>
+            <Bullet icon={<BarChart3 className="h-4 w-4" />}>Real-time outstanding balance</Bullet>
+            <Bullet icon={<ShieldCheck className="h-4 w-4" />}>ZIMRA-ready · ZiG &amp; USD</Bullet>
+          </ul>
+        </section>
 
-      <section className="bg-secondary/40 py-12 px-4">
-        <div className="max-w-screen-md mx-auto">
-          <h2 className="text-2xl font-bold tracking-tight">Everything you need, nothing you don't</h2>
-          <div className="mt-6 grid sm:grid-cols-2 gap-3">
-            <Feature icon={<MessageSquare />} title="WhatsApp quote signing" desc="Send a quote on WhatsApp. Client signs on their phone. Done." />
-            <Feature icon={<Zap />} title="One tap invoice creation" desc="Convert any accepted quote into an invoice instantly." />
-            <Feature icon={<BarChart3 />} title="Business analytics" desc="Know who pays late, your top clients, and your cash flow." />
-            <Feature icon={<WifiOff />} title="Offline mode" desc="View and create documents without internet. Syncs later." />
-            <Feature icon={<DollarSign />} title="ZiG and USD" desc="Live exchange rate. Override anytime. Multi-currency invoices." />
-            <Feature icon={<FileCheck2 />} title="ZIMRA VAT ready" desc="15% VAT toggle. VAT number on every document." />
+        {/* Auth card */}
+        <section>
+          <div className="rounded-2xl border border-border bg-card shadow-sm p-6 sm:p-7">
+            <div className="space-y-1 mb-5">
+              <h2 className="text-lg font-semibold tracking-tight">
+                {mode === "signin" ? "Welcome back" : "Create your account"}
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                {mode === "signin" ? "Sign in to your GetPaid account." : "Start sending quotes in 30 seconds."}
+              </p>
+            </div>
+
+            <form onSubmit={submit} className="space-y-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="email" className="text-xs font-medium">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  autoComplete="email"
+                  placeholder="you@business.co.zw"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="h-10"
+                  required
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="password" className="text-xs font-medium">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  autoComplete={mode === "signin" ? "current-password" : "new-password"}
+                  placeholder="At least 6 characters"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="h-10"
+                  required
+                  minLength={6}
+                />
+              </div>
+
+              <Button type="submit" disabled={busy || loading} className="w-full h-10 mt-1">
+                {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : (
+                  <>
+                    {mode === "signin" ? "Sign in" : "Create account"}
+                    <ArrowRight className="h-4 w-4" />
+                  </>
+                )}
+              </Button>
+            </form>
+
+            <div className="relative my-5">
+              <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-border" /></div>
+              <div className="relative flex justify-center"><span className="bg-card px-2 text-[11px] uppercase tracking-wider text-muted-foreground">or</span></div>
+            </div>
+
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onGoogle}
+              disabled={busy || loading}
+              className="w-full h-10"
+            >
+              <GoogleIcon /> Continue with Google
+            </Button>
+
+            <p className="mt-5 text-center text-xs text-muted-foreground">
+              {mode === "signin" ? "New to GetPaid?" : "Already have an account?"}{" "}
+              <button
+                type="button"
+                onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
+                className="font-medium text-foreground hover:underline"
+              >
+                {mode === "signin" ? "Create an account" : "Sign in"}
+              </button>
+            </p>
           </div>
-        </div>
-      </section>
 
-      <footer className="px-4 py-8 text-center text-xs text-muted-foreground space-x-4">
-        <Link to="/" onClick={(e) => e.preventDefault()} className="hover:text-foreground">Terms of Service</Link>
-        <Link to="/" onClick={(e) => e.preventDefault()} className="hover:text-foreground">Privacy Policy</Link>
-        <p className="mt-3">© {new Date().getFullYear()} GetPaid Zimbabwe.</p>
+          <p className="mt-4 text-center text-[11px] text-muted-foreground px-6">
+            By continuing you agree to our Terms and Privacy Policy.
+          </p>
+        </section>
+      </main>
+
+      <footer className="border-t border-border mt-10">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 text-xs text-muted-foreground flex items-center justify-between">
+          <span>© {new Date().getFullYear()} GetPaid Zimbabwe</span>
+          <span className="hidden sm:inline">Made for hustlers.</span>
+        </div>
       </footer>
     </div>
   );
 }
 
-function Trust({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {
+function Bullet({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {
   return (
-    <li className="flex items-center gap-2.5 text-sm">
-      <span className="h-7 w-7 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">{icon}</span>
+    <li className="flex items-center gap-3 text-sm">
+      <span className="h-7 w-7 rounded-md bg-secondary text-foreground flex items-center justify-center shrink-0 border border-border">
+        {icon}
+      </span>
       <span className="text-foreground/90">{children}</span>
     </li>
   );
 }
 
-function Feature({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
-  return (
-    <div className="rounded-xl bg-card p-4 border border-border/60 shadow-sm flex gap-3">
-      <div className="h-10 w-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
-        <div className="h-5 w-5 [&>svg]:h-5 [&>svg]:w-5">{icon}</div>
-      </div>
-      <div>
-        <h3 className="font-semibold text-sm">{title}</h3>
-        <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{desc}</p>
-      </div>
-    </div>
-  );
-}
-
 function GoogleIcon() {
   return (
-    <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
-      <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.5 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.1 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/>
-      <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.7 19 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.1 29.5 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
-      <path fill="#4CAF50" d="M24 44c5.4 0 10.3-2.1 14-5.4l-6.5-5.5c-2 1.5-4.6 2.4-7.5 2.4-5.3 0-9.7-3.5-11.3-8.4l-6.5 5C9.4 39.6 16.1 44 24 44z"/>
-      <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.2 4.2-4.2 5.6l6.5 5.5C40.7 36 44 30.6 44 24c0-1.3-.1-2.3-.4-3.5z"/>
+    <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
+      <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.5 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.1 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z" transform="scale(0.5)"/>
+      <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.7 19 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.1 29.5 4 24 4 16.3 4 9.7 8.3 6.3 14.7z" transform="scale(0.5)"/>
+      <path fill="#4CAF50" d="M24 44c5.4 0 10.3-2.1 14-5.4l-6.5-5.5c-2 1.5-4.6 2.4-7.5 2.4-5.3 0-9.7-3.5-11.3-8.4l-6.5 5C9.4 39.6 16.1 44 24 44z" transform="scale(0.5)"/>
+      <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.2 4.2-4.2 5.6l6.5 5.5C40.7 36 44 30.6 44 24c0-1.3-.1-2.3-.4-3.5z" transform="scale(0.5)"/>
     </svg>
   );
 }

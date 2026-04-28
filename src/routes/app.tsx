@@ -51,8 +51,8 @@ function AppRoute() {
       <div className="px-4 grid grid-cols-2 gap-3">
         <Stat label="Outstanding" tone="warning"><Money amount={outstanding} currency={profile.primaryCurrency} big /></Stat>
         <Stat label="Paid this month" tone="success"><Money amount={paidThisMonth} currency={profile.primaryCurrency} big /></Stat>
-        <Stat label="Clients"><span className="money text-2xl">{clients.length}</span></Stat>
-        <Stat label="Documents"><span className="money text-2xl">{docs.length}</span></Stat>
+        <Stat label="Clients"><span className="money text-2xl text-foreground">{clients.length}</span></Stat>
+        <Stat label="Documents"><span className="money text-2xl text-foreground">{docs.length}</span></Stat>
       </div>
 
       <div className="px-4 mt-5 grid grid-cols-2 gap-3">
@@ -99,11 +99,14 @@ function AppRoute() {
 }
 
 function Stat({ label, children, tone }: { label: string; children: React.ReactNode; tone?: "success" | "warning" }) {
-  const accent = tone === "success" ? "text-success" : tone === "warning" ? "text-warning" : "text-foreground";
+  const dot = tone === "success" ? "bg-[var(--success)]" : tone === "warning" ? "bg-[var(--warning)]" : "bg-muted-foreground/40";
   return (
-    <div className="rounded-xl bg-card border border-border p-4 shadow-sm">
-      <p className="text-xs text-muted-foreground uppercase tracking-wide">{label}</p>
-      <div className={`mt-1 ${accent}`}>{children}</div>
+    <div className="rounded-xl bg-card border border-border p-4">
+      <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-medium flex items-center gap-1.5">
+        <span className={`h-1.5 w-1.5 rounded-full ${dot}`} />
+        {label}
+      </p>
+      <div className="mt-2 text-foreground">{children}</div>
     </div>
   );
 }
