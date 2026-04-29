@@ -7,8 +7,6 @@ interface AuthCtx {
   session: Session | null;
   loading: boolean;
   signInWithGoogle: () => Promise<{ error: string | null }>;
-  signInWithEmail: (email: string, password: string) => Promise<{ error: string | null }>;
-  signUpWithEmail: (email: string, password: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
 }
 
@@ -33,21 +31,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signInWithGoogle = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: window.location.origin + "/auth/callback" },
-    });
-    return { error: error?.message ?? null };
-  };
-
-  const signInWithEmail = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    return { error: error?.message ?? null };
-  };
-
-  const signUpWithEmail = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { emailRedirectTo: window.location.origin + "/auth/callback" },
+      options: {
+        redirectTo: window.location.origin + "/auth/callback",
+        queryParams: { access_type: "offline", prompt: "consent" },
+      },
     });
     return { error: error?.message ?? null };
   };
@@ -57,7 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <Ctx.Provider value={{ user: session?.user ?? null, session, loading, signInWithGoogle, signInWithEmail, signUpWithEmail, signOut }}>
+    <Ctx.Provider value={{ user: session?.user ?? null, session, loading, signInWithGoogle, signOut }}>
       {children}
     </Ctx.Provider>
   );
